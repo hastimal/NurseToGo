@@ -14,7 +14,7 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="10.205.1.104"
+        android:text="10.205.2.163"
         android:hint="IP address"
         android:layout_above="@+id/clear"
         android:layout_alignParentLeft="true"
@@ -79,10 +79,7 @@
         android:textColor="@drawable/button_text_color"
         android:layout_below="@+id/forward"
         android:layout_alignRight="@+id/connect"
-        android:layout_alignEnd="@+id/connect"
-        android:layout_toEndOf="@+id/forward"
-        android:layout_alignLeft="@+id/stop"
-        android:layout_alignStart="@+id/stop" />
+        android:layout_alignEnd="@+id/connect" />
 
     <Button
         android:id="@+id/left"
@@ -92,9 +89,7 @@
         android:textColor="@drawable/button_text_color"
         android:layout_alignBottom="@+id/right"
         android:layout_alignLeft="@+id/clear"
-        android:text="Left"
-        android:layout_alignRight="@+id/smile"
-        android:layout_alignEnd="@+id/smile" />
+        android:text="Left" />
 
     <Button
         android:id="@+id/backward"
@@ -103,27 +98,68 @@
         android:text="Backward"
         android:textColor="@drawable/button_text_color"
         android:layout_below="@+id/right"
-        android:layout_alignRight="@+id/forward"
-        android:layout_alignEnd="@+id/forward" />
+        android:layout_centerHorizontal="true" />
 
-    <Button
+    <ImageButton
         android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
-        android:textColor="@drawable/button_text_color"
-        android:layout_below="@+id/backward"
-        android:layout_alignRight="@+id/connect"
-        android:layout_alignEnd="@+id/connect" />
+        android:layout_alignTop="@+id/response"
+        android:layout_toLeftOf="@+id/connect"
+        android:layout_toRightOf="@+id/response"
+        android:src="@drawable/stop_sign1"
+        android:layout_toEndOf="@+id/response" />
 
     <Button
-        android:id="@+id/smile"
+        android:id="@+id/headDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Smile"
+        android:text="Head Dn"
         android:textColor="@drawable/button_text_color"
-        android:layout_below="@+id/backward"
+        android:layout_alignTop="@+id/headUp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/forward"
+        android:layout_toStartOf="@+id/forward" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Head Up"
+        android:id="@+id/headUp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:textColor="@drawable/button_text_color"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/backward"
+        android:layout_toEndOf="@+id/backward" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:src="@drawable/rec2"
+        android:layout_below="@+id/headDown"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:layout_width="1500dp"
+        android:layout_height="60dp"
+        android:id="@+id/textView"
+        android:hint="Here your recorded audio would be displayed...."
+        android:textColorHint="#FA1648"
+        android:textColor="#E1D837"
+        android:layout_toEndOf="@+id/headDown"
+        android:layout_toRightOf="@+id/headDown"
+        android:layout_alignBottom="@+id/imageButton" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.2dp"
+        android:id="@+id/separator"
+        android:visibility="visible"
+        android:background="@android:color/darker_gray"/>
+
 
 </RelativeLayout>
