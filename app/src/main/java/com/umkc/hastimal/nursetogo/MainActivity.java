@@ -3,18 +3,14 @@ package com.umkc.hastimal.nursetogo;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Locale;
 
@@ -32,22 +28,32 @@ import android.widget.Toast;
 
 import com.ibm.cio.dto.QueryResult;
 import com.ibm.cio.watsonsdk.SpeechDelegate;
+import com.ibm.cio.watsonsdk.SpeechToText;
 import com.ibm.cio.watsonsdk.TextToSpeech;
 
 
 public class MainActivity extends Activity implements SpeechDelegate {
 
     TextView textResponse;
+    TextView textSTT;
+    TextView textTTS;
     EditText editTextAddress, editTextPort;
-    Button buttonConnect, buttonClear,buttonBackward,buttonForward,buttonLeft,buttonRight,buttonHeadUp,buttonHeadDown;
+    Button buttonConnect, buttonClear,buttonBackward,buttonForward,buttonLeft,buttonRight,buttonHeadUp,buttonHeadDown, buttonTTS;
+    ImageButton buttonStop;
     ImageButton recordButton;
     String command;
     Boolean checkupdate=false;
 
-    public final static String username = "********************************";
-    public final static String password = "********************************";
-    public final static String apiURL = "https://stream.watsonplatform.net/speech-to-text-beta/api";
+    public final static String ttsUsername = "*****************************";
+    public final static String ttsPassword = "*****************************";
+    public final static String ttsApiURL = "https://stream.watsonplatform.net/text-to-speech/api";
+    public final static String sttApiURL = "https://stream.watsonplatform.net/speech-to-text/api";
+    public final static String sttUsername = "*****************************";
+    public final static String sttPassword = "*****************************";
+
     private final int REQ_CODE_SPEECH_INPUT = 100;
+    private boolean isServiceActive = false;
+    private boolean speaking = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,27 +65,95 @@ public class MainActivity extends Activity implements SpeechDelegate {
         buttonConnect = (Button)findViewById(R.id.connect);
         buttonClear = (Button)findViewById(R.id.clear);
         textResponse = (TextView)findViewById(R.id.response);
-
+        textSTT = (TextView)findViewById(R.id.textView);
+        textTTS = (TextView)findViewById(R.id.ttsText);
         buttonBackward=(Button) findViewById(R.id.backward);
         buttonForward=(Button) findViewById(R.id.forward);
         buttonLeft=(Button) findViewById(R.id.left);
         buttonRight=(Button) findViewById(R.id.right);
         buttonHeadUp=(Button) findViewById(R.id.headUp);
         buttonHeadDown=(Button) findViewById(R.id.headDown);
+        buttonStop = (ImageButton)findViewById(R.id.stop);
+
         recordButton =(ImageButton) findViewById(R.id.recordButton);
+        buttonTTS = (Button)findViewById(R.id.ttsButton);
+
+        buttonStop.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                Log.d(".....Stop Button","...pressed");
+                // TODO Auto-generated method stub
+                command="stop";
+                checkupdate=true;
+            }
+
+        });
 
         recordButton.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View arg0) {
-                Log.d(".....Stop Button","...pressed");
 
                 //command="stop";
                 checkupdate=true;
 
-                Speak();
+                //Speak();
+
+
+                if(!isServiceActive)
+                {
+                    try {
+
+                        //activate sst service (one time call)
+                        activateSTT();
+
+                        //service activator. do not try again
+                        isServiceActive = true;
+
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(!speaking) {
+                    Log.d("Record button","...pressed");
+
+                    speaking = true;
+
+                    textSTT.setText(""); //clear text
+
+                    SpeechToText.sharedInstance().recognize();
+
+                }
+                else {
+
+                    Log.d("Stop recording button","...pressed");
+
+                    speaking = false;
+
+                    SpeechToText.sharedInstance().stopRecording();
+                }
             }
 
+        });
+
+        buttonTTS.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    TextToSpeech.sharedInstance().initWithContext(getWatsonTTSServiceUrl(),getApplicationContext() );
+
+                    TextToSpeech.sharedInstance().setUsername(ttsUsername);
+                    TextToSpeech.sharedInstance().setPassword(ttsPassword);
+
+                    TextToSpeech.sharedInstance().synthesize(textTTS.getText().toString());
+
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
         });
         buttonHeadDown.setOnClickListener(new OnClickListener(){
 
@@ -170,6 +244,16 @@ public class MainActivity extends Activity implements SpeechDelegate {
                     myClientTask.execute();
                 }};
 
+    public void activateSTT() throws URISyntaxException {
+        SpeechToText.sharedInstance().initWithContext(this.getWatsonSTTServiceUrl(), this.getApplicationContext(), false);
+
+        SpeechToText.sharedInstance().setUsername(sttUsername);
+        SpeechToText.sharedInstance().setPassword(sttPassword);
+        SpeechToText.sharedInstance().setDelegate(this); //this main activity is the delegate
+
+
+    }
+
     public void Speak()
     {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -188,25 +272,41 @@ public class MainActivity extends Activity implements SpeechDelegate {
     }
 
     public void onOpen() {
-        // the  connection to the STT service is successfully opened
+
+        Log.d("STT service", "established!");
+
+
     }
 
     public void onError(String error) {
-        // error interacting with the STT service
+
+        Log.d("STT service","established!");
     }
 
     public void onClose(int code, String reason, boolean remote) {
-        // the connection with the STT service was just closed
+
+        Log.d("STT service","closed!");
     }
 
     public void onMessage(String message) {
-        // a message comes from the STT service with recognition results
+        Log.d("RCV: ", message);
+
+        textSTT.append(message);
     }
 
-    @Override
+    //@Override
     public void receivedMessage(int i, QueryResult queryResult) {
 
     }
+
+    private URI getWatsonSTTServiceUrl() throws URISyntaxException {
+        return new URI(sttApiURL);
+    }
+
+    private URI getWatsonTTSServiceUrl() throws URISyntaxException {
+        return new URI(ttsApiURL);
+    }
+
 
     public class MyClientTask extends AsyncTask<Void, Void, Void> {
 

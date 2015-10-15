@@ -8,7 +8,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:background="@drawable/background_image3"
-    android:id="@+id/NurseToGo">
+    android:id="@+id/NurseToGo"
+    tools:context=".MainActivity">
 
     <EditText
         android:id="@+id/address"
@@ -149,7 +150,7 @@
         android:layout_height="60dp"
         android:id="@+id/textView"
         android:hint="Here your recorded audio would be displayed...."
-        android:textColorHint="#FA1648"
+        android:textColorHint="#163cfa"
         android:textColor="#E1D837"
         android:layout_toEndOf="@+id/headDown"
         android:layout_toRightOf="@+id/headDown"
@@ -172,6 +173,24 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/textView"
         android:layout_alignEnd="@+id/textView" />
+
+    <Button
+        android:id="@+id/ttsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Synthesize"
+        android:textColor="@drawable/button_text_color"
+        android:layout_below="@+id/sendCommand"
+        android:layout_alignEnd="@+id/sendCommand" />
+
+    <EditText
+        android:id="@+id/ttsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter your text here"
+        android:hint="IP address"
+        android:layout_toStartOf="@+id/ttsButton"
+        android:layout_alignBottom="@+id/ttsButton" />
 
 
 </RelativeLayout>
