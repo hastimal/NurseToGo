@@ -44,12 +44,7 @@ public class MainActivity extends Activity implements SpeechDelegate {
     String command;
     Boolean checkupdate=false;
 
-    public final static String ttsUsername = "*****************************";
-    public final static String ttsPassword = "*****************************";
-    public final static String ttsApiURL = "https://stream.watsonplatform.net/text-to-speech/api";
-    public final static String sttApiURL = "https://stream.watsonplatform.net/speech-to-text/api";
-    public final static String sttUsername = "*****************************";
-    public final static String sttPassword = "*****************************";
+
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
     private boolean isServiceActive = false;
@@ -96,7 +91,7 @@ public class MainActivity extends Activity implements SpeechDelegate {
             public void onClick(View arg0) {
 
                 //command="stop";
-                checkupdate=true;
+//                checkupdate=true;
 
                 //Speak();
 
@@ -370,10 +365,5 @@ public class MainActivity extends Activity implements SpeechDelegate {
             textResponse.setText(response);
             super.onPostExecute(result);
         }
-
-
-
-
-
     }
 }
